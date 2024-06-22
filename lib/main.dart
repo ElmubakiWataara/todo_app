@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/todo_model.dart';
-import 'package:todo_app/screens/ceate_screen.dart';
+import 'package:todo_app/screens/create_screen.dart';
+import 'package:todo_app/screens/edit_screen.dart';
 import 'package:todo_app/widgets/tileContainer_widget.dart';
 import 'package:todo_app/widgets/tiletext.dart';
 
@@ -21,7 +22,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Todo App Test try '),
+      home: const MyHomePage(
+        title: 'Todo App ',
+      ),
     );
   }
 }
@@ -36,8 +39,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.sizeOf(context);
+    List<TodoModel> myTodolist = [];
+    setState(() {
+      myTodolist = todosList;
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -53,15 +61,35 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 20,
               // child: Text('hello'),
             ),
-            ...List.generate(todosList.length, (index) {
-              return TileContainerWidget(deviceSize: deviceSize);
+            ...List.generate(myTodolist.length, (index) {
+              return TileContainerWidget(
+                deviceSize: deviceSize,
+                todo: myTodolist[index],
+                index: index,
+                editOnTap: () async {
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return EditScreen(
+                      todo: myTodolist[index],
+                      index: index,
+                    );
+                  }));
+                  setState(() {});
+                },
+                deleteOnTap: () {
+                  todosList.removeAt(
+                    index,
+                  );
+                  setState(() {});
+                },
+              );
             }),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
@@ -69,8 +97,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             );
+            setState(() {});
           },
           child: Icon(Icons.add)),
     );
   }
 }
+
+//dark lavender

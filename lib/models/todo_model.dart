@@ -9,3 +9,10 @@ class TodoModel {
 }
 
 List<TodoModel> todosList = [];
+
+void createTodo({required int index, required TodoModel data}) {
+  todosList[index] = TodoModel(
+    title: data.title,
+    description: data.description,
+  );
+}
